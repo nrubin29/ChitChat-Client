@@ -1,7 +1,7 @@
-package me.nrubin29.chitchat.client;
+package me.nrubin29.chitchat.common;
 
-import javax.swing.*;
-import java.awt.*;
+import me.nrubin29.chitchat.client.ChatPanel;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -9,31 +9,33 @@ import java.util.Date;
 public class Chat {
 
     private final String name;
-    private final ArrayList<User> users;
+    private final ArrayList<AbstractUser> users;
     private final ArrayList<Message> messages;
 
-    private final transient JTextArea textArea;
+    private final ChatPanel chatPanel;
 
     public Chat(String name, String... names) {
         this(name, ChatManager.getInstance().getUsers(names));
     }
 
-    private Chat(String name, User... users) {
+    public Chat(String name, AbstractUser... users) {
         this.name = name;
-        this.users = new ArrayList<User>(Arrays.asList(users));
+        this.users = new ArrayList<AbstractUser>(Arrays.asList(users));
         this.messages = new ArrayList<Message>();
 
-        this.textArea = new JTextArea();
-        textArea.setMaximumSize(new Dimension(490, 460 - 35));
-        textArea.setEditable(false);
+        this.chatPanel = new ChatPanel(this);
     }
 
     public String getName() {
         return name;
     }
 
-    public User[] getUsers() {
-        return users.toArray(new User[users.size()]);
+    public AbstractUser[] getUsers() {
+        return users.toArray(new AbstractUser[users.size()]);
+    }
+
+    public void addUser(AbstractUser user) {
+        users.add(user);
     }
 
     public Message[] getMessages() {
@@ -43,10 +45,10 @@ public class Chat {
     public void addMessage(String sender, String chat, String msg, Date when) {
         Message message = new Message(sender, chat, msg, when);
         messages.add(message);
-        Window.getInstance().getChatPanel().messageReceived(message);
+        chatPanel.messageReceived(message);
     }
 
-    public JTextArea getTextArea() {
-        return textArea;
+    public ChatPanel getChatPanel() {
+        return chatPanel;
     }
 }

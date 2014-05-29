@@ -1,7 +1,7 @@
 package me.nrubin29.chitchat.client;
 
-import me.nrubin29.chitchat.client.packet.handler.PacketHandlerManager;
-import me.nrubin29.chitchat.client.packet.packet.Packet;
+import me.nrubin29.chitchat.common.packet.handler.PacketHandlerManager;
+import me.nrubin29.chitchat.common.packet.packet.Packet;
 
 import javax.crypto.Cipher;
 import javax.crypto.SealedObject;
@@ -29,7 +29,7 @@ public class ServerConnector {
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
 
-    public void connect() {
+    void connect() {
         try {
             socket = new Socket(ip.split(":")[0], Integer.valueOf(ip.split(":")[1]));
 
@@ -45,8 +45,8 @@ public class ServerConnector {
                 public void run() {
                     while (true) {
                         try {
-//                        	Packet packet = (Packet) ((SealedObject) inputStream.readObject()).getObject(key);
                             Packet packet = (Packet) inputStream.readObject();
+                            System.out.println("Received packet: " + packet);
                             handlePacket(packet);
                         } catch (EOFException e) {
                             System.out.println("Lost connection to server.");
@@ -70,6 +70,15 @@ public class ServerConnector {
         }
     }
 
+    public void disconnect() {
+        try {
+            socket.close();
+            socket = null;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendPacket(Packet packet) {
         if (socket == null) {
             connect();
@@ -85,7 +94,7 @@ public class ServerConnector {
         }
     }
 
-    void handlePacket(Packet packet) {
+    private void handlePacket(Packet packet) {
         PacketHandlerManager.getInstance().handle(packet);
     }
 

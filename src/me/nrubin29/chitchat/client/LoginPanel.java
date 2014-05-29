@@ -1,6 +1,6 @@
 package me.nrubin29.chitchat.client;
 
-import me.nrubin29.chitchat.client.packet.packet.PacketLoginRequest;
+import me.nrubin29.chitchat.common.packet.packet.PacketLoginRequest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,9 +12,12 @@ public class LoginPanel extends Box {
     LoginPanel() {
         super(BoxLayout.Y_AXIS);
 
+        JLabel logo = new JLabel(new ImageIcon(ProgramImage.LOGO.getImage()));
         final JTextField username = new JTextField();
         final JPasswordField password = new JPasswordField();
         final JTextField ip = new JTextField("localhost:");
+
+        logo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JButton login = new JButton("Login");
         login.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -25,12 +28,12 @@ public class LoginPanel extends Box {
                 ServerConnector.getInstance().sendPacket(new PacketLoginRequest(username.getText(), new String(password.getPassword())));
             }
         });
-        add(login);
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setMaximumSize(new Dimension(200, 200));
+        panel.setMaximumSize(new Dimension(300, 300));
         panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(logo);
         panel.add(username);
         panel.add(password);
         panel.add(ip);
