@@ -3,6 +3,7 @@ package me.nrubin29.chitchat.common;
 import me.nrubin29.chitchat.client.Window;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ChatManager {
 
@@ -20,6 +21,7 @@ public class ChatManager {
     private AbstractUser localUser;
 
     public Chat addChat(Chat chat) {
+        System.out.println("Adding chat " + chat.getName() + " with users " + Arrays.toString(chat.getUsers()));
         chats.add(chat);
         Window.getInstance().getMainPanel().chatAdded(chat);
         return chat;
@@ -47,13 +49,13 @@ public class ChatManager {
 
     public AbstractUser addUser(AbstractUser user) {
         users.add(user);
-        Window.getInstance().getMainPanel().getCurrentChat().getChatPanel().userAdded(user);
+        Window.getInstance().getMainPanel().getCurrentChat().getChatPanel().userAdded(user.getName());
         return user;
     }
 
     public AbstractUser removeUser(AbstractUser user) {
         users.remove(user);
-        Window.getInstance().getMainPanel().getCurrentChat().getChatPanel().userRemoved(user);
+        Window.getInstance().getMainPanel().getCurrentChat().getChatPanel().userRemoved(user.getName());
         return user;
     }
 

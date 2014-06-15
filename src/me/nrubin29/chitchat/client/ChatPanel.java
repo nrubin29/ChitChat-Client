@@ -1,6 +1,5 @@
 package me.nrubin29.chitchat.client;
 
-import me.nrubin29.chitchat.common.AbstractUser;
 import me.nrubin29.chitchat.common.Chat;
 import me.nrubin29.chitchat.common.ChatManager;
 import me.nrubin29.chitchat.common.Message;
@@ -37,7 +36,7 @@ public class ChatPanel extends JPanel {
                 String user = JOptionPane.showInputDialog(ChatPanel.this, "Enter a user to add to the chat.");
 
                 if (user != null) {
-                    ServerConnector.getInstance().sendPacket(new PacketChatAddUser(chat, ChatManager.getInstance().getUser(user)));
+                    ServerConnector.getInstance().sendPacket(new PacketChatAddUser(chat, user));
                 }
             }
         });
@@ -81,11 +80,11 @@ public class ChatPanel extends JPanel {
         textArea.append("[" + message.getWhen() + "] " + message.getSender() + ": " + message.getMessage() + "\n");
     }
 
-    public void userAdded(AbstractUser user) {
-        bubbleArea.addBubble(user.getName());
+    public void userAdded(String user) {
+        bubbleArea.addBubble(user);
     }
 
-    public void userRemoved(AbstractUser user) {
-        bubbleArea.removeBubble(user.getName());
+    public void userRemoved(String user) {
+        bubbleArea.removeBubble(user);
     }
 }

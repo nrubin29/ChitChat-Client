@@ -17,9 +17,10 @@ public class PacketHandlerManager {
     private PacketHandlerManager() {
         handlers.add(new PacketChatAddUserHandler());
         handlers.add(new PacketChatCreateHandler());
-        handlers.add(new PacketLoginRequestHandler());
+        handlers.add(new PacketChatListHandler());
         handlers.add(new PacketLoginResponseHandler());
         handlers.add(new PacketMessageHandler());
+        handlers.add(new PacketRegisterResponseHandler());
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

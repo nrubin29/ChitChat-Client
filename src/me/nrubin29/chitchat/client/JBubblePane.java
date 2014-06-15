@@ -1,6 +1,5 @@
 package me.nrubin29.chitchat.client;
 
-import me.nrubin29.chitchat.common.AbstractUser;
 import me.nrubin29.chitchat.common.Chat;
 
 import javax.swing.*;
@@ -10,8 +9,8 @@ import java.awt.*;
 class JBubblePane extends JTextPane {
 
     public JBubblePane(Chat chat) {
-        for (AbstractUser user : chat.getUsers()) {
-            addBubble(user.getName());
+        for (String user : chat.getUsers()) {
+            addBubble(user);
         }
 
         setMaximumSize(new Dimension(490, 20));

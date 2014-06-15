@@ -1,10 +1,10 @@
 package me.nrubin29.chitchat.common.packet.packet;
 
-public class PacketLoginResponse extends Packet {
+public class PacketRegisterResponse extends Packet {
 
-    private static final long serialVersionUID = 2259015235455303614L;
+    private static final long serialVersionUID = 9162231317463057120L;
 
-    public enum LoginResponse {
+    public enum RegisterResponse {
         SUCCESS,
         FAILURE
     }
@@ -12,7 +12,7 @@ public class PacketLoginResponse extends Packet {
     private final String user;
     private final String response;
 
-    public PacketLoginResponse(String user, LoginResponse response) {
+    public PacketRegisterResponse(String user, RegisterResponse response) {
         this.user = user;
         this.response = response.name();
     }

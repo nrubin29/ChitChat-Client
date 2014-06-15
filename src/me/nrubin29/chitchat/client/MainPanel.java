@@ -67,7 +67,7 @@ public class MainPanel extends JPanel {
                 String chatName = JOptionPane.showInputDialog(MainPanel.this, "Enter a name for the chat.");
 
                 if (chatName != null) {
-                    Chat chat = new Chat(chatName, ChatManager.getInstance().getLocalUser());
+                    Chat chat = new Chat(chatName, ChatManager.getInstance().getLocalUser().getName());
                     ChatManager.getInstance().addChat(chat);
                     ServerConnector.getInstance().sendPacket(new PacketChatCreate(chat));
                 }
