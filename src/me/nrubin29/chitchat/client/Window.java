@@ -21,23 +21,12 @@ public class Window extends JFrame {
         setTitle("ChitChat - Login");
 
         add(loginPanel = new LoginPanel());
-//        add(mainPanel = new MainPanel());
 
         setBackground(Color.WHITE);
         setSize(640, 480);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
-
-//        User u = ChatManager.getInstance().addUser(new User("Noah"));
-//        ChatManager.getInstance().addUser(new User("Luke"));
-//        ChatManager.getInstance().addUser(new User("Bob"));
-//
-//        Chat c = ChatManager.getInstance().addChat(new Chat("Noah", "Noah"));
-//        ChatManager.getInstance().addChat(new Chat("Friends", "Noah", "Luke"));
-//        ChatManager.getInstance().addChat(new Chat("Global", "Noah", "Luke", "Bob"));
-//
-//        PacketHandlerManager.getInstance().handle(new PacketMessage(c, u, "Hello there!"));
     }
 
     public void loginSuccess() {

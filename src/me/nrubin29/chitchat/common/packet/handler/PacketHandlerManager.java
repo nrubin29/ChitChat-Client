@@ -21,6 +21,8 @@ public class PacketHandlerManager {
         handlers.add(new PacketLoginResponseHandler());
         handlers.add(new PacketMessageHandler());
         handlers.add(new PacketRegisterResponseHandler());
+        handlers.add(new PacketUserJoinHandler());
+        handlers.add(new PacketUserListHandler());
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ServerConnector {
 
@@ -57,6 +58,10 @@ public class ServerConnector {
                                 e1.printStackTrace();
                             }
 
+                            socket = null;
+                            break;
+                        } catch (SocketException e) {
+                            System.out.println("Socket closed.");
                             socket = null;
                             break;
                         } catch (Exception e) {

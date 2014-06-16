@@ -49,13 +49,21 @@ public class ChatManager {
 
     public AbstractUser addUser(AbstractUser user) {
         users.add(user);
-        Window.getInstance().getMainPanel().getCurrentChat().getChatPanel().userAdded(user.getName());
+
+        for (Chat chat : chats) {
+            chat.getChatPanel().userAdded(user.getName());
+        }
+
         return user;
     }
 
     public AbstractUser removeUser(AbstractUser user) {
         users.remove(user);
-        Window.getInstance().getMainPanel().getCurrentChat().getChatPanel().userRemoved(user.getName());
+
+        for (Chat chat : chats) {
+            chat.getChatPanel().userRemoved(user.getName());
+        }
+
         return user;
     }
 
@@ -88,7 +96,7 @@ public class ChatManager {
         return users;
     }
 
-    AbstractUser[] getAllUsers() {
+    public AbstractUser[] getAllUsers() {
         ArrayList<AbstractUser> temp = new ArrayList<AbstractUser>();
         temp.addAll(users);
         temp.add(localUser);
