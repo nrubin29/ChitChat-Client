@@ -3,7 +3,6 @@ package me.nrubin29.chitchat.common;
 import me.nrubin29.chitchat.client.Window;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ChatManager {
 
@@ -17,11 +16,10 @@ public class ChatManager {
     }
 
     private final ArrayList<Chat> chats = new ArrayList<Chat>();
-    private final ArrayList<AbstractUser> users = new ArrayList<AbstractUser>();
-    private AbstractUser localUser;
+    private final ArrayList<User> users = new ArrayList<User>();
+    private User localUser;
 
     public Chat addChat(Chat chat) {
-        System.out.println("Adding chat " + chat.getName() + " with users " + Arrays.toString(chat.getUsers()));
         chats.add(chat);
         Window.getInstance().getMainPanel().chatAdded(chat);
         return chat;
@@ -47,7 +45,7 @@ public class ChatManager {
         return null;
     }
 
-    public AbstractUser addUser(AbstractUser user) {
+    public User addUser(User user) {
         users.add(user);
 
         for (Chat chat : chats) {
@@ -57,7 +55,7 @@ public class ChatManager {
         return user;
     }
 
-    public AbstractUser removeUser(AbstractUser user) {
+    public User removeUser(User user) {
         users.remove(user);
 
         for (Chat chat : chats) {
@@ -67,26 +65,26 @@ public class ChatManager {
         return user;
     }
 
-    public AbstractUser getLocalUser() {
+    public User getLocalUser() {
         return localUser;
     }
 
-    public void setLocalUser(AbstractUser localUser) {
+    public void setLocalUser(User localUser) {
         this.localUser = localUser;
     }
 
-    public AbstractUser getUser(String name) {
-        for (AbstractUser user : getAllUsers()) {
+    public User getUser(String name) {
+        for (User user : getAllUsers()) {
             if (user.getName().equals(name)) {
                 return user;
             }
         }
 
-        throw new NullPointerException("User by name " + name + " does not exist.");
+        return null;
     }
 
-    public AbstractUser[] getUsers(String... names) {
-        AbstractUser[] users = new AbstractUser[names.length];
+    public User[] getUsers(String... names) {
+        User[] users = new User[names.length];
 
         int i = 0;
         for (String name : names) {
@@ -96,10 +94,16 @@ public class ChatManager {
         return users;
     }
 
-    public AbstractUser[] getAllUsers() {
-        ArrayList<AbstractUser> temp = new ArrayList<AbstractUser>();
+    public User[] getAllUsers() {
+        ArrayList<User> temp = new ArrayList<User>();
         temp.addAll(users);
         temp.add(localUser);
-        return temp.toArray(new AbstractUser[temp.size()]);
+        return temp.toArray(new User[temp.size()]);
+    }
+
+    public void clear() {
+        chats.clear();
+        users.clear();
+        localUser = null;
     }
 }

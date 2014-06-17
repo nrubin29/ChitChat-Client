@@ -16,11 +16,13 @@ public class Window extends JFrame {
 
     private LoginPanel loginPanel;
     private MainPanel mainPanel;
+    private boolean login;
 
     private void setup() {
         setTitle("ChitChat - Login");
 
         add(loginPanel = new LoginPanel());
+        login = true;
 
         setBackground(Color.WHITE);
         setSize(640, 480);
@@ -29,9 +31,16 @@ public class Window extends JFrame {
         setVisible(true);
     }
 
-    public void loginSuccess() {
-        remove(loginPanel);
-        add(mainPanel = new MainPanel());
+    public void swapPanels() {
+        if (login) {
+            remove(loginPanel);
+            add(mainPanel = new MainPanel());
+        } else {
+            remove(mainPanel);
+            add(loginPanel = new LoginPanel());
+        }
+
+        login = !login;
 
         validate();
         repaint();

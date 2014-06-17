@@ -1,7 +1,7 @@
 package me.nrubin29.chitchat.common.packet.handler;
 
-import me.nrubin29.chitchat.common.AbstractUser;
 import me.nrubin29.chitchat.common.ChatManager;
+import me.nrubin29.chitchat.common.User;
 import me.nrubin29.chitchat.common.packet.packet.PacketUserList;
 
 public class PacketUserListHandler extends PacketHandler<PacketUserList> {
@@ -13,7 +13,7 @@ public class PacketUserListHandler extends PacketHandler<PacketUserList> {
     @Override
     public void handle(PacketUserList packet) {
         for (String user : packet.getUsers()) {
-            ChatManager.getInstance().addUser(new AbstractUser(user));
+            ChatManager.getInstance().addUser(new User(user));
         }
     }
 }

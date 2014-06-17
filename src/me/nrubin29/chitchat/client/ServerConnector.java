@@ -1,5 +1,6 @@
 package me.nrubin29.chitchat.client;
 
+import me.nrubin29.chitchat.common.ChatManager;
 import me.nrubin29.chitchat.common.packet.handler.PacketHandlerManager;
 import me.nrubin29.chitchat.common.packet.packet.Packet;
 
@@ -59,6 +60,10 @@ public class ServerConnector {
                             }
 
                             socket = null;
+
+                            Window.getInstance().swapPanels();
+                            ChatManager.getInstance().clear();
+
                             break;
                         } catch (SocketException e) {
                             System.out.println("Socket closed.");

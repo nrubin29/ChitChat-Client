@@ -20,8 +20,10 @@ public class LoginPanel extends Box {
 
         logo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+
         JButton login = new JButton("Login");
-        login.setAlignmentX(Component.CENTER_ALIGNMENT);
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -31,7 +33,6 @@ public class LoginPanel extends Box {
         });
 
         JButton register = new JButton("Register");
-        register.setAlignmentX(Component.CENTER_ALIGNMENT);
         register.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -39,6 +40,9 @@ public class LoginPanel extends Box {
                 ServerConnector.getInstance().sendPacket(new PacketRegisterRequest(username.getText(), new String(password.getPassword())));
             }
         });
+
+        buttonPanel.add(login);
+        buttonPanel.add(register);
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -48,8 +52,7 @@ public class LoginPanel extends Box {
         panel.add(username);
         panel.add(password);
         panel.add(ip);
-        panel.add(login);
-        panel.add(register);
+        panel.add(buttonPanel);
 
         add(Box.createVerticalGlue());
         add(panel);

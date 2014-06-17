@@ -1,7 +1,7 @@
 package me.nrubin29.chitchat.common.packet.handler;
 
-import me.nrubin29.chitchat.common.AbstractUser;
 import me.nrubin29.chitchat.common.ChatManager;
+import me.nrubin29.chitchat.common.User;
 import me.nrubin29.chitchat.common.packet.packet.PacketUserJoin;
 
 public class PacketUserJoinHandler extends PacketHandler<PacketUserJoin> {
@@ -12,6 +12,6 @@ public class PacketUserJoinHandler extends PacketHandler<PacketUserJoin> {
 
     @Override
     public void handle(PacketUserJoin packet) {
-        ChatManager.getInstance().addUser(new AbstractUser(packet.getUser()));
+        ChatManager.getInstance().addUser(new User(packet.getUser()));
     }
 }

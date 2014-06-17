@@ -8,8 +8,8 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainPanel extends JPanel {
 
@@ -19,6 +19,8 @@ public class MainPanel extends JPanel {
     private Chat currentChat;
 
     MainPanel() {
+        Window.getInstance().setTitle("ChitChat");
+
         final JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         leftPanel.setMaximumSize(new Dimension(150, 480));
@@ -56,14 +58,15 @@ public class MainPanel extends JPanel {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.setMaximumSize(new Dimension(150, 33)); // 22
+        buttonPanel.setMaximumSize(new Dimension(150, 33));
 
-        JButton addChat = new JButton("+");
-        addChat.setMaximumSize(new Dimension(20, 20));
-        addChat.setBorderPainted(false);
-        addChat.addActionListener(new ActionListener() {
+        buttonPanel.add(Box.createHorizontalGlue());
+
+        JLabel addChat = new JLabel("+");
+        addChat.setMaximumSize(new Dimension(100, 20));
+        addChat.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 String chatName = JOptionPane.showInputDialog(MainPanel.this, "Enter a name for the chat.");
 
                 if (chatName != null) {
@@ -77,15 +80,14 @@ public class MainPanel extends JPanel {
 
         buttonPanel.add(Box.createHorizontalGlue());
 
-        JButton removeChat = new JButton("-");
-        removeChat.setMaximumSize(new Dimension(20, 20));
-        removeChat.setBorderPainted(false);
-        removeChat.addActionListener(new ActionListener() {
+        JLabel removeChat = new JLabel("-");
+        removeChat.setMaximumSize(new Dimension(100, 20));
+        removeChat.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                String chatName = list.getSelectedValue().toString();
+            public void mouseClicked(MouseEvent e) {
+                if (list.getSelectedValue() != null) {
+                    String chatName = list.getSelectedValue().toString();
 
-                if (chatName != null) {
                     if (currentChat != null) {
                         remove(currentChat.getChatPanel());
                         Window.getInstance().setTitle("ChitChat");
@@ -98,6 +100,21 @@ public class MainPanel extends JPanel {
             }
         });
         buttonPanel.add(removeChat);
+
+        buttonPanel.add(Box.createHorizontalGlue());
+
+        JLabel logout = new JLabel("x");
+        logout.setMaximumSize(new Dimension(100, 20));
+        logout.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Window.getInstance().swapPanels();
+                ChatManager.getInstance().clear();
+            }
+        });
+        buttonPanel.add(logout);
+
+        buttonPanel.add(Box.createHorizontalGlue());
 
         leftPanel.add(buttonPanel);
 
