@@ -3,6 +3,7 @@ package me.nrubin29.chitchat.client;
 import me.nrubin29.chitchat.common.Chat;
 import me.nrubin29.chitchat.common.ChatManager;
 import me.nrubin29.chitchat.common.packet.packet.PacketChatCreate;
+import me.nrubin29.chitchat.common.packet.packet.PacketChatRemoveUser;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -95,7 +96,8 @@ public class MainPanel extends JPanel {
                         repaint();
                     }
 
-                    ChatManager.getInstance().removeChat(chatName); // TODO: Send a packet.
+                    ChatManager.getInstance().removeChat(chatName);
+                    ServerConnector.getInstance().sendPacket(new PacketChatRemoveUser(chatName, ChatManager.getInstance().getLocalUser().getName()));
                 }
             }
         });

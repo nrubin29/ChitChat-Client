@@ -3,7 +3,6 @@ package me.nrubin29.chitchat.common;
 import me.nrubin29.chitchat.client.ChatPanel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 public class Chat {
@@ -20,10 +19,14 @@ public class Chat {
 
     public Chat(String name, String... users) {
         this.name = name;
-        this.users = new ArrayList<String>(Arrays.asList(users));
+        this.users = new ArrayList<String>();
         this.messages = new ArrayList<Message>();
 
         this.chatPanel = new ChatPanel(this);
+
+        for (String user : users) {
+            addUser(user);
+        }
     }
 
     public String getName() {
@@ -36,6 +39,12 @@ public class Chat {
 
     public void addUser(String user) {
         users.add(user);
+        chatPanel.userAdded(user);
+    }
+
+    public void removeUser(String user) {
+        users.remove(user);
+        chatPanel.userRemoved(user);
     }
 
     public Message[] getMessages() {

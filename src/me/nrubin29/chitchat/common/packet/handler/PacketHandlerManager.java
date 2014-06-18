@@ -18,6 +18,7 @@ public class PacketHandlerManager {
         handlers.add(new PacketChatAddUserHandler());
         handlers.add(new PacketChatCreateHandler());
         handlers.add(new PacketChatListHandler());
+        handlers.add(new PacketChatRemoveUserHandler());
         handlers.add(new PacketLoginResponseHandler());
         handlers.add(new PacketMessageHandler());
         handlers.add(new PacketRegisterResponseHandler());

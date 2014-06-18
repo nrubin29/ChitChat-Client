@@ -1,5 +1,6 @@
 package me.nrubin29.chitchat.common;
 
+import me.nrubin29.chitchat.client.User;
 import me.nrubin29.chitchat.client.Window;
 
 import java.util.ArrayList;
@@ -48,19 +49,11 @@ public class ChatManager {
     public User addUser(User user) {
         users.add(user);
 
-        for (Chat chat : chats) {
-            chat.getChatPanel().userAdded(user.getName());
-        }
-
         return user;
     }
 
     public User removeUser(User user) {
         users.remove(user);
-
-        for (Chat chat : chats) {
-            chat.getChatPanel().userRemoved(user.getName());
-        }
 
         return user;
     }

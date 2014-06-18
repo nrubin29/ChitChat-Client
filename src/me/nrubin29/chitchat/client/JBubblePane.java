@@ -2,7 +2,6 @@ package me.nrubin29.chitchat.client;
 
 import me.nrubin29.chitchat.common.Chat;
 import me.nrubin29.chitchat.common.ChatManager;
-import me.nrubin29.chitchat.common.User;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
