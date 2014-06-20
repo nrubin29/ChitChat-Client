@@ -6,7 +6,7 @@ public class PacketUserLeave extends Packet {
 
     private static final long serialVersionUID = 7711637711615685676L;
 
-    private String user;
+    private final String user;
 
     public PacketUserLeave(AbstractUser user) {
         this.user = user.getName();

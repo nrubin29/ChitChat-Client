@@ -17,6 +17,8 @@ public class MainPanel extends JPanel {
     private final JList list;
     private final DefaultListModel model;
 
+    private final SettingsWindow settingsWindow;
+
     private Chat currentChat;
 
     MainPanel() {
@@ -25,6 +27,8 @@ public class MainPanel extends JPanel {
         final JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         leftPanel.setMaximumSize(new Dimension(150, 480));
+
+        settingsWindow = new SettingsWindow();
 
         model = new DefaultListModel();
 
@@ -102,6 +106,18 @@ public class MainPanel extends JPanel {
             }
         });
         buttonPanel.add(removeChat);
+
+        buttonPanel.add(Box.createHorizontalGlue());
+
+        JLabel settings = new JLabel("S");
+        settings.setMaximumSize(new Dimension(100, 20));
+        settings.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                settingsWindow.setVisible(true);
+            }
+        });
+        buttonPanel.add(settings);
 
         buttonPanel.add(Box.createHorizontalGlue());
 

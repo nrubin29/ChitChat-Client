@@ -79,11 +79,7 @@ public class ChatPanel extends JPanel {
         textArea.append("[" + message.getWhen() + "] " + message.getSender() + ": " + message.getMessage() + "\n");
     }
 
-    public void userAdded() {
-        bubbleArea.update();
-    }
-
-    public void userRemoved() {
+    public void update() {
         bubbleArea.update();
     }
 }

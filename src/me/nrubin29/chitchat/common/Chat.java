@@ -42,12 +42,12 @@ public class Chat {
 
     public void addUser(String user) {
         users.add(user);
-        chatPanel.userAdded();
+        chatPanel.update();
     }
 
     public void removeUser(String user) {
         users.remove(user);
-        chatPanel.userRemoved();
+        chatPanel.update();
     }
 
     public boolean hasUser(String user) {

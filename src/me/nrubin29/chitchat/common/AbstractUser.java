@@ -6,14 +6,21 @@ public class AbstractUser implements Serializable {
 
     private static final long serialVersionUID = 4086519985573649809L;
 
-    private String name;
+    public enum UserStatus {
+        ONLINE,
+        AWAY
+    }
 
-    public AbstractUser() {
+    private String name;
+    private UserStatus userStatus;
+
+    protected AbstractUser() {
         this("");
     }
 
-    public AbstractUser(String name) {
+    protected AbstractUser(String name) {
         this.name = name;
+        this.userStatus = UserStatus.ONLINE;
     }
 
     public String getName() {
@@ -25,6 +32,14 @@ public class AbstractUser implements Serializable {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
     @Override

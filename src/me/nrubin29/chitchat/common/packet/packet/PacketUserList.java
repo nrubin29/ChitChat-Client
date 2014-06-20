@@ -7,7 +7,7 @@ public class PacketUserList extends Packet {
 
     private static final long serialVersionUID = 1168341392763009279L;
 
-    private String[] users;
+    private final String[] users;
 
     public PacketUserList() {
         this.users = convert(ChatManager.getInstance().getAllUsers());

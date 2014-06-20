@@ -20,14 +20,13 @@ public class ChatManager {
     private final ArrayList<User> users = new ArrayList<User>();
     private User localUser;
 
-    public Chat addChat(Chat chat) {
+    public void addChat(Chat chat) {
         chats.add(chat);
         Window.getInstance().getMainPanel().chatAdded(chat);
-        return chat;
     }
 
-    public Chat removeChat(String name) {
-        return removeChat(getChat(name));
+    public void removeChat(String name) {
+        removeChat(getChat(name));
     }
 
     Chat removeChat(Chat chat) {
@@ -46,28 +45,32 @@ public class ChatManager {
         return null;
     }
 
-    public User addUser(User user) {
-        users.add(user);
+    public Chat[] getChats(User user) {
+        ArrayList<Chat> userChats = new ArrayList<Chat>();
 
         for (Chat chat : chats) {
             if (chat.hasUser(user.getName())) {
-                chat.getChatPanel().userAdded();
+                userChats.add(chat);
             }
         }
 
-        return user;
+        return userChats.toArray(new Chat[userChats.size()]);
     }
 
-    public User removeUser(User user) {
+    public void addUser(User user) {
+        users.add(user);
+
+        for (Chat chat : getChats(user)) {
+            chat.getChatPanel().update();
+        }
+    }
+
+    public void removeUser(User user) {
         users.remove(user);
 
-        for (Chat chat : chats) {
-            if (chat.hasUser(user.getName())) {
-                chat.getChatPanel().userRemoved();
-            }
+        for (Chat chat : getChats(user)) {
+            chat.getChatPanel().update();
         }
-
-        return user;
     }
 
     public User getLocalUser() {

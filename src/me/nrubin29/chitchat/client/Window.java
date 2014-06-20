@@ -1,9 +1,15 @@
 package me.nrubin29.chitchat.client;
 
+import me.nrubin29.chitchat.common.AbstractUser;
+import me.nrubin29.chitchat.common.ChatManager;
+import me.nrubin29.chitchat.common.packet.packet.PacketUserStatusChange;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 
 public class Window extends JFrame {
 
@@ -32,12 +38,27 @@ public class Window extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        trayIcon = new TrayIcon(ProgramImage.TRAYLOGO.getImage(), "ChitChat");
+        addWindowFocusListener(new WindowFocusListener() {
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                if (!login) {
+                    ServerConnector.getInstance().sendPacket(new PacketUserStatusChange(ChatManager.getInstance().getLocalUser(), AbstractUser.UserStatus.AWAY));
+                }
+            }
 
+            @Override
+            public void windowGainedFocus(WindowEvent e) {
+                if (!login) {
+                    ServerConnector.getInstance().sendPacket(new PacketUserStatusChange(ChatManager.getInstance().getLocalUser(), AbstractUser.UserStatus.ONLINE));
+                }
+            }
+        });
+
+        trayIcon = new TrayIcon(ProgramImage.TRAYLOGO.getImage(), "ChitChat");
         trayIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (!login) {
+                if (!login && !isVisible()) {
                     setVisible(true);
                 }
             }
