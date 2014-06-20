@@ -110,7 +110,7 @@ public class MainPanel extends JPanel {
         logout.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Window.getInstance().swapPanels();
+                Window.getInstance().showLoginPanel();
                 ChatManager.getInstance().clear();
             }
         });
@@ -127,10 +127,6 @@ public class MainPanel extends JPanel {
         add(sep);
 
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-    }
-
-    public Chat getCurrentChat() {
-        return currentChat;
     }
 
     public void chatAdded(Chat chat) {

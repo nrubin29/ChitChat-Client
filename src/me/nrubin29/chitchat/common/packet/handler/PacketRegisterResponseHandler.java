@@ -21,7 +21,7 @@ public class PacketRegisterResponseHandler extends PacketHandler<PacketRegisterR
 
         if (response == RegisterResponse.SUCCESS) {
             ChatManager.getInstance().setLocalUser(new User(packet.getUser()));
-            Window.getInstance().swapPanels();
+            Window.getInstance().showMainPanel();
         } else {
             JOptionPane.showMessageDialog(Window.getInstance(), "Register failed.");
             ServerConnector.getInstance().disconnect();

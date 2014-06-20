@@ -14,7 +14,6 @@ public class PacketChatListHandler extends PacketHandler<PacketChatList> {
     @Override
     public void handle(PacketChatList packet) {
         for (ChatData chat : packet.getChats()) {
-            System.out.println("Going to add chat " + chat.getName());
             ChatManager.getInstance().addChat(new Chat(chat));
         }
     }

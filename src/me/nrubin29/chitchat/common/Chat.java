@@ -1,8 +1,11 @@
 package me.nrubin29.chitchat.common;
 
 import me.nrubin29.chitchat.client.ChatPanel;
+import me.nrubin29.chitchat.client.Notification;
+import me.nrubin29.chitchat.client.Window;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 public class Chat {
@@ -39,12 +42,16 @@ public class Chat {
 
     public void addUser(String user) {
         users.add(user);
-        chatPanel.userAdded(user);
+        chatPanel.userAdded();
     }
 
     public void removeUser(String user) {
         users.remove(user);
-        chatPanel.userRemoved(user);
+        chatPanel.userRemoved();
+    }
+
+    public boolean hasUser(String user) {
+        return users.contains(user);
     }
 
     public Message[] getMessages() {
@@ -55,9 +62,18 @@ public class Chat {
         Message message = new Message(sender, chat, msg, when);
         messages.add(message);
         chatPanel.messageReceived(message);
+
+        if (!Window.getInstance().isVisible()) {
+            Notification.showNotification(message);
+        }
     }
 
     public ChatPanel getChatPanel() {
         return chatPanel;
+    }
+
+    @Override
+    public String toString() {
+        return "Chat name=" + name + " users=" + Arrays.toString(users.toArray());
     }
 }

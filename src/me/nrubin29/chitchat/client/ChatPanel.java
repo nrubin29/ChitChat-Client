@@ -8,10 +8,10 @@ import me.nrubin29.chitchat.common.packet.packet.PacketMessage;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ChatPanel extends JPanel {
 
@@ -27,12 +27,11 @@ public class ChatPanel extends JPanel {
         bubbleArea.setMaximumSize(new Dimension(490, 25));
         userPanel.add(bubbleArea);
 
-        JButton add = new JButton("+");
+        JLabel add = new JLabel("+");
         add.setMaximumSize(new Dimension(15, 15));
-        add.setBorderPainted(false);
-        add.addActionListener(new ActionListener() {
+        add.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 String user = JOptionPane.showInputDialog(ChatPanel.this, "Enter a user to add to the chat.");
 
                 if (user != null) {
@@ -80,11 +79,11 @@ public class ChatPanel extends JPanel {
         textArea.append("[" + message.getWhen() + "] " + message.getSender() + ": " + message.getMessage() + "\n");
     }
 
-    public void userAdded(String user) {
-        bubbleArea.addBubble(user);
+    public void userAdded() {
+        bubbleArea.update();
     }
 
-    public void userRemoved(String user) {
-        bubbleArea.removeBubble(user);
+    public void userRemoved() {
+        bubbleArea.update();
     }
 }

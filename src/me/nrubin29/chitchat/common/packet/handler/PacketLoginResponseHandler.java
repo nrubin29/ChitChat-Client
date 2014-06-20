@@ -21,7 +21,7 @@ public class PacketLoginResponseHandler extends PacketHandler<PacketLoginRespons
 
         if (response == LoginResponse.SUCCESS) {
             ChatManager.getInstance().setLocalUser(new User(packet.getUser()));
-            Window.getInstance().swapPanels();
+            Window.getInstance().showMainPanel();
         } else {
             JOptionPane.showMessageDialog(Window.getInstance(), "Login failed.");
             ServerConnector.getInstance().disconnect();

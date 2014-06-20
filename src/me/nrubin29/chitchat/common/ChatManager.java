@@ -49,11 +49,23 @@ public class ChatManager {
     public User addUser(User user) {
         users.add(user);
 
+        for (Chat chat : chats) {
+            if (chat.hasUser(user.getName())) {
+                chat.getChatPanel().userAdded();
+            }
+        }
+
         return user;
     }
 
     public User removeUser(User user) {
         users.remove(user);
+
+        for (Chat chat : chats) {
+            if (chat.hasUser(user.getName())) {
+                chat.getChatPanel().userRemoved();
+            }
+        }
 
         return user;
     }

@@ -61,7 +61,7 @@ public class ServerConnector {
 
                             socket = null;
 
-                            Window.getInstance().swapPanels();
+                            Window.getInstance().showLoginPanel();
                             ChatManager.getInstance().clear();
 
                             break;

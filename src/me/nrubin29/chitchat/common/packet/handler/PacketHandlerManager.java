@@ -23,6 +23,7 @@ public class PacketHandlerManager {
         handlers.add(new PacketMessageHandler());
         handlers.add(new PacketRegisterResponseHandler());
         handlers.add(new PacketUserJoinHandler());
+        handlers.add(new PacketUserLeaveHandler());
         handlers.add(new PacketUserListHandler());
     }
 
