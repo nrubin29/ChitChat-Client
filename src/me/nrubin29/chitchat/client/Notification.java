@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 public class Notification extends JFrame {
 
     public static void showNotification(Message message) {
+        if (!Boolean.valueOf(Settings.getInstance().get("notifications"))) return;
+
         final Notification notification = new Notification(message);
         Toolkit.getDefaultToolkit().beep();
 
@@ -32,7 +34,7 @@ public class Notification extends JFrame {
         JFrame.setDefaultLookAndFeelDecorated(true);
         setUndecorated(true);
         com.sun.awt.AWTUtilities.setWindowOpacity(this, 0.5f);
-        setSize(new Dimension(100, label.getFontMetrics(label.getFont()).stringWidth(label.getText()) + 50));
+        setSize(new Dimension(label.getFontMetrics(label.getFont()).stringWidth(label.getText()) + 50, 100));
         setLocation(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getLocation());
         setVisible(true);
     }

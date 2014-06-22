@@ -145,6 +145,10 @@ public class MainPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
     }
 
+    public SettingsWindow getSettingsWindow() {
+        return settingsWindow;
+    }
+
     public void chatAdded(Chat chat) {
         model.addElement(chat.getName());
     }

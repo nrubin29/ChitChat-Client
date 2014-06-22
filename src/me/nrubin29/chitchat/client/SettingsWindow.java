@@ -6,7 +6,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.util.HashMap;
 
-class SettingsWindow extends JFrame {
+public class SettingsWindow extends JFrame {
 
     private final JList list;
 
@@ -17,6 +17,7 @@ class SettingsWindow extends JFrame {
         super("Settings");
 
         settingsPanels = new HashMap<String, JPanel>();
+        settingsPanels.put("General", new GeneralSettingsPanel());
         settingsPanels.put("Account", new AccountSettingsPanel());
 
         DefaultListModel model = new DefaultListModel();
@@ -54,5 +55,9 @@ class SettingsWindow extends JFrame {
         setBackground(Color.WHITE);
         setSize(480, 480);
         setLocationRelativeTo(null);
+    }
+
+    public <E extends JPanel> E getPanel(String name) {
+        return (E) settingsPanels.get(name);
     }
 }
