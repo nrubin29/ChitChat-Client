@@ -3,7 +3,7 @@ package me.nrubin29.chitchat.common.packet.packet;
 import me.nrubin29.chitchat.common.AbstractUser;
 import me.nrubin29.chitchat.common.Chat;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class PacketMessage extends Packet {
 
@@ -16,13 +16,13 @@ public class PacketMessage extends Packet {
     private final String chat;
     private final String sender;
     private final String msg;
-    private final Date when;
+    private final Calendar when;
 
     public PacketMessage(String chat, String sender, String msg) {
         this.chat = chat;
         this.sender = sender;
         this.msg = msg.replaceAll(" ", "%20");
-        this.when = new Date(System.currentTimeMillis());
+        this.when = Calendar.getInstance();
     }
 
     public String getChat() {
@@ -37,7 +37,7 @@ public class PacketMessage extends Packet {
         return msg;
     }
 
-    public Date getWhen() {
+    public Calendar getWhen() {
         return when;
     }
 }

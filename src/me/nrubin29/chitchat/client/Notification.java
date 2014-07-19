@@ -13,7 +13,10 @@ public class Notification extends JFrame {
         if (!Boolean.valueOf(Settings.getInstance().get("notifications"))) return;
 
         final Notification notification = new Notification(message);
-        Toolkit.getDefaultToolkit().beep();
+
+        if (Boolean.valueOf(Settings.getInstance().get("sound"))) {
+            Toolkit.getDefaultToolkit().beep();
+        }
 
         Timer timer = new Timer(5 * 1000, new ActionListener() {
             @Override

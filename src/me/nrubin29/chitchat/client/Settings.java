@@ -26,6 +26,8 @@ public class Settings {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
                 writer.write("notifications: true");
+                writer.newLine();
+                writer.write("sound: true");
 
                 writer.close();
             }

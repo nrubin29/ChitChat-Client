@@ -12,6 +12,6 @@ public class PacketUserJoinHandler extends PacketHandler<PacketUserJoin> {
 
     @Override
     public void handle(PacketUserJoin packet) {
-        ChatManager.getInstance().addUser(new User(packet.getUser()));
+        ChatManager.getInstance().addUser(new User(packet.getUser().split(";")));
     }
 }

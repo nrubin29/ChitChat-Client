@@ -7,16 +7,22 @@ import me.nrubin29.chitchat.common.packet.packet.PacketChatAddUser;
 import me.nrubin29.chitchat.common.packet.packet.PacketMessage;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.URI;
+import java.util.Calendar;
 
 public class ChatPanel extends JPanel {
 
     private final JBubblePane bubbleArea;
-    private final JTextArea textArea;
+    private final JTextPane textArea;
     private final JTextField input;
 
     public ChatPanel(final Chat chat) {
@@ -47,10 +53,28 @@ public class ChatPanel extends JPanel {
         sep.setMaximumSize(new Dimension(490, 20));
         add(sep);
 
-        textArea = new JTextArea();
+        textArea = new JTextPane();
         textArea.setMaximumSize(new Dimension(490, 460 - 35));
         textArea.setEditable(false);
-        add(textArea);
+        textArea.setContentType("text/html");
+        textArea.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true);
+        textArea.addHyperlinkListener(new HyperlinkListener() {
+            @Override
+            public void hyperlinkUpdate(HyperlinkEvent e) {
+                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    try {
+                        Desktop.getDesktop().browse(new URI(e.getDescription()));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        JScrollPane textAreaScroll = new JScrollPane(textArea);
+        textAreaScroll.setMaximumSize(new Dimension(490, 460 - 35));
+        textAreaScroll.setBorder(null);
+        add(textAreaScroll);
 
         JSeparator sep1 = new JSeparator(SwingConstants.HORIZONTAL);
         sep1.setMaximumSize(new Dimension(490, 20));
@@ -61,7 +85,7 @@ public class ChatPanel extends JPanel {
         input.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER && !input.getText().trim().equals("")) {
                     ServerConnector.getInstance().sendPacket(new PacketMessage(chat, ChatManager.getInstance().getLocalUser(), input.getText()));
                     input.setText("");
                 }
@@ -76,7 +100,18 @@ public class ChatPanel extends JPanel {
     }
 
     public void messageReceived(Message message) {
-        textArea.append("[" + message.getWhen() + "] " + message.getSender() + ": " + message.getMessage() + "\n");
+        String time = "";
+        time += message.getWhen().get(Calendar.HOUR_OF_DAY) + ":";
+        time += message.getWhen().get(Calendar.MINUTE) + " ";
+        time += message.getWhen().get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
+
+        try {
+            HTMLDocument doc = (HTMLDocument) textArea.getDocument();
+            HTMLEditorKit editorKit = (HTMLEditorKit) textArea.getEditorKit();
+            editorKit.insertHTML(doc, doc.getLength(), "[" + time + "] " + message.getSender() + ": " + message.getMessage() + "\n", 0, 0, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void update() {

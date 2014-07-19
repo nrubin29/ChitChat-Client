@@ -22,6 +22,7 @@ public class PacketHandlerManager {
         handlers.add(new PacketLoginResponseHandler());
         handlers.add(new PacketMessageHandler());
         handlers.add(new PacketRegisterResponseHandler());
+        handlers.add(new PacketUserDisplayNameChangeHandler());
         handlers.add(new PacketUserJoinHandler());
         handlers.add(new PacketUserLeaveHandler());
         handlers.add(new PacketUserListHandler());

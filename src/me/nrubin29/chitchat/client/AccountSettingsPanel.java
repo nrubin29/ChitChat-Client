@@ -1,6 +1,7 @@
 package me.nrubin29.chitchat.client;
 
 import me.nrubin29.chitchat.common.ChatManager;
+import me.nrubin29.chitchat.common.packet.packet.PacketUserDisplayNameChange;
 import me.nrubin29.chitchat.common.packet.packet.PacketUserPasswordChange;
 import me.nrubin29.chitchat.common.packet.packet.PacketUserPasswordChangeResponse;
 
@@ -11,9 +12,25 @@ import java.awt.event.ActionListener;
 
 public class AccountSettingsPanel extends JPanel {
 
+    private JLabel user;
+
     public AccountSettingsPanel() {
-        JLabel user = new JLabel("Logged in as " + ChatManager.getInstance().getLocalUser().getName() + ".");
+        user = new JLabel("Username: " + ChatManager.getInstance().getLocalUser().getName() + ". Display Name: " + ChatManager.getInstance().getLocalUser().getDisplayName() + ".");
         add(user);
+
+        JButton changeDisplayName = new JButton("Change Display Name");
+        changeDisplayName.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String newDisplayName = JOptionPane.showInputDialog(AccountSettingsPanel.this, "Enter a new display name.");
+                if (newDisplayName == null) return;
+
+                if (JOptionPane.showConfirmDialog(AccountSettingsPanel.this, "Do you want to change your display name?") == JOptionPane.YES_OPTION) {
+                    ServerConnector.getInstance().sendPacket(new PacketUserDisplayNameChange(ChatManager.getInstance().getLocalUser(), newDisplayName));
+                }
+            }
+        });
+        add(changeDisplayName);
 
         JButton changePassword = new JButton("Change Password");
         changePassword.addActionListener(new ActionListener() {
@@ -42,5 +59,11 @@ public class AccountSettingsPanel extends JPanel {
         } else {
             JOptionPane.showMessageDialog(this, "Could not change password.");
         }
+    }
+
+    public void displayNameChange() {
+        user.setText("Username: " + ChatManager.getInstance().getLocalUser().getName() + ". Display Name: " + ChatManager.getInstance().getLocalUser().getDisplayName() + ".");
+        validate();
+        repaint();
     }
 }

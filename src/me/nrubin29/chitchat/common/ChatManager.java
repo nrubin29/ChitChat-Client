@@ -82,7 +82,9 @@ public class ChatManager {
     }
 
     public User getUser(String name) {
-        for (User user : getAllUsers()) {
+        if (localUser.getName().equals(name)) return localUser;
+
+        for (User user : users) {
             if (user.getName().equals(name)) {
                 return user;
             }

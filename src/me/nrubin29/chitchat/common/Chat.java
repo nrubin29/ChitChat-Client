@@ -6,7 +6,7 @@ import me.nrubin29.chitchat.client.Window;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Calendar;
 
 public class Chat {
 
@@ -58,7 +58,7 @@ public class Chat {
         return messages.toArray(new Message[messages.size()]);
     }
 
-    public void addMessage(String sender, String chat, String msg, Date when) {
+    public void addMessage(String sender, String chat, String msg, Calendar when) {
         Message message = new Message(sender, chat, msg, when);
         messages.add(message);
         chatPanel.messageReceived(message);

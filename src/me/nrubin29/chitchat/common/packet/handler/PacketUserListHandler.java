@@ -13,7 +13,7 @@ public class PacketUserListHandler extends PacketHandler<PacketUserList> {
     @Override
     public void handle(PacketUserList packet) {
         for (String user : packet.getUsers()) {
-            ChatManager.getInstance().addUser(new User(user));
+            ChatManager.getInstance().addUser(new User(user.split(";")));
         }
     }
 }

@@ -29,6 +29,7 @@ class JBubblePane extends JPanel {
 
             if (ChatManager.getInstance().getUser(user) != null) {
                 User u = ChatManager.getInstance().getUser(user);
+                label.setText(u.getDisplayName());
 
                 if (u.getUserStatus() == AbstractUser.UserStatus.ONLINE) {
                     label.setBackground(Color.GREEN);

@@ -21,7 +21,7 @@ public class PacketUserList extends Packet {
         String[] names = new String[abstractUsers.length];
 
         for (int i = 0; i < abstractUsers.length; i++) {
-            names[i] = abstractUsers[i].getName();
+            names[i] = abstractUsers[i].getName() + ";" + abstractUsers[i].getDisplayName();
         }
 
         return names;
