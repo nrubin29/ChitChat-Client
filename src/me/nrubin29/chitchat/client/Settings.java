@@ -23,37 +23,31 @@ public class Settings {
             if (!file.exists()) {
                 file.createNewFile();
 
-                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-
-                writer.write("notifications: true");
-                writer.newLine();
-                writer.write("sound: true");
-
-                writer.close();
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                    writer.write("notifications: true");
+                    writer.newLine();
+                    writer.write("sound: true");
+                }
             }
 
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-
-            while (reader.ready()) {
-                String currentLine = reader.readLine();
-                contents.put(currentLine.substring(0, currentLine.indexOf(":")), currentLine.substring(currentLine.indexOf(":") + 2).replaceAll("%20", " "));
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                while (reader.ready()) {
+                    String currentLine = reader.readLine();
+                    contents.put(currentLine.substring(0, currentLine.indexOf(":")), currentLine.substring(currentLine.indexOf(":") + 2).replaceAll("%20", " "));
+                }
             }
-
-            reader.close();
         } catch (Exception ignored) {
         }
     }
 
     public final void save() {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-
-            for (Entry<String, String> entry : contents.entrySet()) {
-                writer.write(entry.getKey() + ": " + entry.getValue());
-                writer.newLine();
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                for (Entry<String, String> entry : contents.entrySet()) {
+                    writer.write(entry.getKey() + ": " + entry.getValue());
+                    writer.newLine();
+                }
             }
-
-            writer.close();
         } catch (Exception ignored) {
         }
     }

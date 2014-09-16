@@ -1,8 +1,8 @@
 package me.nrubin29.chitchat.client.packethandler;
 
+import me.nrubin29.chitchat.client.Main;
 import me.nrubin29.chitchat.client.ServerConnector;
 import me.nrubin29.chitchat.client.User;
-import me.nrubin29.chitchat.client.Window;
 import me.nrubin29.chitchat.common.ChatManager;
 import me.nrubin29.chitchat.common.packet.PacketLoginResponse;
 import me.nrubin29.chitchat.common.packet.PacketLoginResponse.LoginResponse;
@@ -21,7 +21,7 @@ public class PacketLoginResponseHandler extends PacketHandler<PacketLoginRespons
 
         if (response == LoginResponse.SUCCESS) {
             ChatManager.getInstance().setLocalUser(new User(packet.getUser().split(";")));
-            Window.getInstance().showMainPanel();
+            Main.getInstance().showMainPanel();
         } else {
             JOptionPane.showMessageDialog(null, "Login failed."); // TODO: Replace with JavaFX popup.
             ServerConnector.getInstance().disconnect();

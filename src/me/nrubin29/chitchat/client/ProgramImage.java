@@ -1,32 +1,19 @@
 package me.nrubin29.chitchat.client;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.net.URL;
+import javafx.scene.image.Image;
 
 public enum ProgramImage {
 
     LOGO,
     TRAYLOGO;
 
-    private URL url;
-    private BufferedImage image;
+    private Image image;
 
     private ProgramImage() {
-        this.url = getClass().getResource("/res/" + name().toLowerCase() + ".png");
-
-        try {
-            this.image = ImageIO.read(url);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.image = new Image(getClass().getResourceAsStream("/res/" + name().toLowerCase() + ".png"));
     }
 
-    public URL getURL() {
-        return url;
-    }
-
-    public BufferedImage getImage() {
+    public Image getImage() {
         return image;
     }
 }

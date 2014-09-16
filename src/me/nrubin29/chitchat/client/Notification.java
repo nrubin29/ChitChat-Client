@@ -2,6 +2,7 @@ package me.nrubin29.chitchat.client;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.text.Font;
 import javafx.scene.text.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -18,7 +19,7 @@ public class Notification extends FlowPane {
 
         final Notification notification = new Notification(message);
 
-        Stage stage = new Stage();
+        final Stage stage = new Stage();
         Scene scene = new Scene(notification);
         stage.setScene(scene);
 

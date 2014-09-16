@@ -1,8 +1,8 @@
 package me.nrubin29.chitchat.client.packethandler;
 
+import me.nrubin29.chitchat.client.Main;
 import me.nrubin29.chitchat.client.ServerConnector;
 import me.nrubin29.chitchat.client.User;
-import me.nrubin29.chitchat.client.Window;
 import me.nrubin29.chitchat.common.ChatManager;
 import me.nrubin29.chitchat.common.packet.PacketRegisterResponse;
 import me.nrubin29.chitchat.common.packet.PacketRegisterResponse.RegisterResponse;
@@ -21,7 +21,7 @@ public class PacketRegisterResponseHandler extends PacketHandler<PacketRegisterR
 
         if (response == RegisterResponse.SUCCESS) {
             ChatManager.getInstance().setLocalUser(new User(packet.getUser().split(";")));
-            Window.getInstance().showMainPanel();
+            Main.getInstance().showMainPanel();
         } else {
             JOptionPane.showMessageDialog(null, "Register failed."); // TODO: Replace with JavaFX popup.
             ServerConnector.getInstance().disconnect();

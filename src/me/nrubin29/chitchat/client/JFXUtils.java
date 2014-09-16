@@ -46,7 +46,7 @@ public final class JFXUtils {
      * @param action the {@link Runnable} to run
      * @throws NullPointerException if {@code action} is {@code null}
      */
-    public static void runAndWait(Runnable action) {
+    public static void runAndWait(final Runnable action) {
         if (action == null)
             throw new NullPointerException("action");
 
@@ -58,11 +58,14 @@ public final class JFXUtils {
 
         // queue on JavaFX thread and wait for completion
         final CountDownLatch doneLatch = new CountDownLatch(1);
-        Platform.runLater(() -> {
-            try {
-                action.run();
-            } finally {
-                doneLatch.countDown();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    action.run();
+                } finally {
+                    doneLatch.countDown();
+                }
             }
         });
 

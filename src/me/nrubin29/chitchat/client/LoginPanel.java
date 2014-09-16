@@ -1,5 +1,7 @@
 package me.nrubin29.chitchat.client;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -16,7 +18,7 @@ import static me.nrubin29.chitchat.client.JFXUtils.spacer;
 public class LoginPanel extends HBox {
 
     LoginPanel() {
-        javafx.scene.image.ImageView logo = new ImageView(ProgramImage.LOGO.getURL().toString());
+        ImageView logo = new ImageView(ProgramImage.LOGO.getImage());
         final TextField username = new TextField();
         final PasswordField password = new PasswordField();
         final TextField ip = new TextField();
@@ -25,15 +27,21 @@ public class LoginPanel extends HBox {
         buttonPanel.setAlignment(Pos.CENTER);
 
         Button login = new Button("Login");
-        login.setOnAction(e -> {
-            ServerConnector.getInstance().setIP(ip.getText());
-            ServerConnector.getInstance().sendPacket(new PacketLoginRequest(username.getText(), password.getText()));
+        login.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                ServerConnector.getInstance().setIP(ip.getText());
+                ServerConnector.getInstance().sendPacket(new PacketLoginRequest(username.getText(), password.getText()));
+            }
         });
 
         Button register = new Button("Register");
-        register.setOnAction(e -> {
-            ServerConnector.getInstance().setIP(ip.getText());
-            ServerConnector.getInstance().sendPacket(new PacketRegisterRequest(username.getText(), password.getText()));
+        register.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                ServerConnector.getInstance().setIP(ip.getText());
+                ServerConnector.getInstance().sendPacket(new PacketRegisterRequest(username.getText(), password.getText()));
+            }
         });
 
         buttonPanel.getChildren().addAll(login, region(5, 0), register);

@@ -1,8 +1,8 @@
 package me.nrubin29.chitchat.common;
 
 import me.nrubin29.chitchat.client.ChatPanel;
+import me.nrubin29.chitchat.client.Main;
 import me.nrubin29.chitchat.client.Notification;
-import me.nrubin29.chitchat.client.Window;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,7 +63,7 @@ public class Chat {
         messages.add(message);
         chatPanel.messageReceived(message);
 
-        if (!Window.getInstance().isVisible()) {
+        if (!Main.getInstance().isVisible()) {
             Notification.showNotification(message);
         }
     }

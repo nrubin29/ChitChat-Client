@@ -18,31 +18,34 @@ class BubblePane extends HBox {
     }
 
     public void update() {
-        runAndWait(() -> {
-            getChildren().clear();
+        runAndWait(new Runnable() {
+            @Override
+            public void run() {
+                BubblePane.this.getChildren().clear();
 
-            for (String user : chat.getUsers()) {
-                HBox border = new HBox();
+                for (String user : chat.getUsers()) {
+                    HBox border = new HBox();
 
-                Text label = new Text(user);
-                border.getChildren().add(label);
+                    Text label = new Text(user);
+                    border.getChildren().add(label);
 
-                getChildren().add(border);
+                    BubblePane.this.getChildren().add(border);
 
-                if (ChatManager.getInstance().getUser(user) != null) {
-                    User u = ChatManager.getInstance().getUser(user);
-                    label.setText(u.getDisplayName());
+                    if (ChatManager.getInstance().getUser(user) != null) {
+                        User u = ChatManager.getInstance().getUser(user);
+                        label.setText(u.getDisplayName());
 
-                    if (u.getUserStatus() == AbstractUser.UserStatus.ONLINE) {
-                        border.setStyle("-fx-border-color: black; -fx-background-color: green;");
-                    } else if (u.getUserStatus() == AbstractUser.UserStatus.AWAY) {
-                        border.setStyle("-fx-border-color: black; -fx-background-color: yellow;");
+                        if (u.getUserStatus() == AbstractUser.UserStatus.ONLINE) {
+                            border.setStyle("-fx-border-color: black; -fx-background-color: green;");
+                        } else if (u.getUserStatus() == AbstractUser.UserStatus.AWAY) {
+                            border.setStyle("-fx-border-color: black; -fx-background-color: yellow;");
+                        }
+                    } else {
+                        border.setStyle("-fx-border-color: black; -fx-background-color: red;");
                     }
-                } else {
-                    border.setStyle("-fx-border-color: black; -fx-background-color: red;");
-                }
 
-                getChildren().add(region(5, 0));
+                    BubblePane.this.getChildren().add(region(5, 0));
+                }
             }
         });
     }

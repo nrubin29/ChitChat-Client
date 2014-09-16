@@ -1,7 +1,7 @@
 package me.nrubin29.chitchat.client.packethandler;
 
 import me.nrubin29.chitchat.client.AccountSettingsPanel;
-import me.nrubin29.chitchat.client.Window;
+import me.nrubin29.chitchat.client.Main;
 import me.nrubin29.chitchat.common.packet.PacketUserPasswordChangeResponse;
 
 public class PacketUserPasswordChangeResponseHandler extends PacketHandler<PacketUserPasswordChangeResponse> {
@@ -12,6 +12,6 @@ public class PacketUserPasswordChangeResponseHandler extends PacketHandler<Packe
 
     @Override
     public void handle(PacketUserPasswordChangeResponse packet) {
-        Window.getInstance().getMainPanel().getSettingsWindow().<AccountSettingsPanel>getPanel("Account").passwordChangeResponse(packet);
+        Main.getInstance().getMainPanel().getSettingsWindow().<AccountSettingsPanel>getPanel("Account").passwordChangeResponse(packet);
     }
 }

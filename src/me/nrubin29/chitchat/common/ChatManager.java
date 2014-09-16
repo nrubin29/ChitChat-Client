@@ -1,7 +1,7 @@
 package me.nrubin29.chitchat.common;
 
+import me.nrubin29.chitchat.client.Main;
 import me.nrubin29.chitchat.client.User;
-import me.nrubin29.chitchat.client.Window;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ public class ChatManager {
 
     public void addChat(Chat chat) {
         chats.add(chat);
-        Window.getInstance().getMainPanel().chatAdded(chat);
+        Main.getInstance().getMainPanel().chatAdded(chat);
     }
 
     public void removeChat(String name) {
@@ -31,7 +31,7 @@ public class ChatManager {
 
     Chat removeChat(Chat chat) {
         chats.remove(chat);
-        Window.getInstance().getMainPanel().chatRemoved(chat);
+        Main.getInstance().getMainPanel().chatRemoved(chat);
         return chat;
     }
 
