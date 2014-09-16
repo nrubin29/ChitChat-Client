@@ -1,69 +1,85 @@
 package me.nrubin29.chitchat.client;
 
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import me.nrubin29.chitchat.common.ChatManager;
-import me.nrubin29.chitchat.common.packet.packet.PacketUserDisplayNameChange;
-import me.nrubin29.chitchat.common.packet.packet.PacketUserPasswordChange;
-import me.nrubin29.chitchat.common.packet.packet.PacketUserPasswordChangeResponse;
+import me.nrubin29.chitchat.common.packet.PacketUserDisplayNameChange;
+import me.nrubin29.chitchat.common.packet.PacketUserPasswordChange;
+import me.nrubin29.chitchat.common.packet.PacketUserPasswordChangeResponse;
+import org.controlsfx.dialog.Dialogs;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.Optional;
 
-public class AccountSettingsPanel extends JPanel {
+public class AccountSettingsPanel extends VBox {
 
-    private JLabel user;
+    private Text user;
 
-    public AccountSettingsPanel() {
-        user = new JLabel("Username: " + ChatManager.getInstance().getLocalUser().getName() + ". Display Name: " + ChatManager.getInstance().getLocalUser().getDisplayName() + ".");
-        add(user);
+    public AccountSettingsPanel(SettingsWindow settings) {
+        user = new Text("Username: " + ChatManager.getInstance().getLocalUser().getName() + ". Display Name: " + ChatManager.getInstance().getLocalUser().getDisplayName() + ".");
+        getChildren().add(user);
 
-        JButton changeDisplayName = new JButton("Change Display Name");
-        changeDisplayName.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String newDisplayName = JOptionPane.showInputDialog(AccountSettingsPanel.this, "Enter a new display name.");
-                if (newDisplayName == null) return;
+        Button changeDisplayName = new Button("Change Display Name");
+        changeDisplayName.setOnAction(e -> {
+            Optional<String> response = Dialogs.create()
+                    .owner(settings)
+                    .title("Change Display Name")
+                    .masthead("Change Display Name")
+                    .message("Please enter a new display name.")
+                    .showTextInput();
 
-                if (JOptionPane.showConfirmDialog(AccountSettingsPanel.this, "Do you want to change your display name?") == JOptionPane.YES_OPTION) {
-                    ServerConnector.getInstance().sendPacket(new PacketUserDisplayNameChange(ChatManager.getInstance().getLocalUser(), newDisplayName));
-                }
+            if (response.isPresent()) {
+                ServerConnector.getInstance().sendPacket(new PacketUserDisplayNameChange(ChatManager.getInstance().getLocalUser(), response.get()));
             }
         });
-        add(changeDisplayName);
+        getChildren().add(changeDisplayName);
 
-        JButton changePassword = new JButton("Change Password");
-        changePassword.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String oldPassword = JOptionPane.showInputDialog(AccountSettingsPanel.this, "Enter your old password.");
-                if (oldPassword == null) return;
+        Button changePassword = new Button("Change Password");
+        changePassword.setOnAction(e -> {
+            Optional<String> oldReponse = Dialogs.create()
+                    .owner(settings)
+                    .title("Enter Old Password")
+                    .masthead("Enter Old Password")
+                    .message("Please enter your old password.")
+                    .showTextInput();
 
-                String newPassword = JOptionPane.showInputDialog(AccountSettingsPanel.this, "Enter a new password.");
-                if (newPassword == null) return;
+            if (!oldReponse.isPresent()) return;
 
-                if (JOptionPane.showConfirmDialog(AccountSettingsPanel.this, "Do you want to change your password? If yes, wait for confirmation before closing this window.") == JOptionPane.YES_OPTION) {
-                    ServerConnector.getInstance().sendPacket(new PacketUserPasswordChange(ChatManager.getInstance().getLocalUser(), oldPassword, newPassword));
-                }
-            }
+            Optional<String> newResponse = Dialogs.create()
+                    .owner(settings)
+                    .title("Enter New Password")
+                    .masthead("Enter New Password")
+                    .message("Please enter a new password.")
+                    .showTextInput();
+
+            if (!newResponse.isPresent()) return;
+
+            ServerConnector.getInstance().sendPacket(new PacketUserPasswordChange(ChatManager.getInstance().getLocalUser(), oldReponse.get(), newResponse.get()));
         });
-        add(changePassword);
+        getChildren().add(changePassword);
 
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setMaximumSize(new Dimension(320, 480));
+        setPrefSize(320, 480);
     }
 
     public void passwordChangeResponse(PacketUserPasswordChangeResponse response) {
         if (PacketUserPasswordChangeResponse.PasswordChangeResponse.valueOf(response.getResponse()) == PacketUserPasswordChangeResponse.PasswordChangeResponse.SUCCESS) {
-            JOptionPane.showMessageDialog(this, "Password changed successfully.");
+            Dialogs.create()
+                    .owner(Window.getInstance().getStage())
+                    .title("Success")
+                    .masthead("Success")
+                    .message("Password changed successfully.")
+                    .showInformation();
         } else {
-            JOptionPane.showMessageDialog(this, "Could not change password.");
+            Dialogs.create()
+                    .owner(Window.getInstance().getStage())
+                    .title("Failure")
+                    .masthead("Failure")
+                    .message("Could not change password.")
+                    .showInformation();
         }
     }
 
     public void displayNameChange() {
         user.setText("Username: " + ChatManager.getInstance().getLocalUser().getName() + ". Display Name: " + ChatManager.getInstance().getLocalUser().getDisplayName() + ".");
-        validate();
-        repaint();
     }
 }

@@ -16,8 +16,8 @@ public class ChatManager {
         return instance;
     }
 
-    private final ArrayList<Chat> chats = new ArrayList<Chat>();
-    private final ArrayList<User> users = new ArrayList<User>();
+    private final ArrayList<Chat> chats = new ArrayList<>();
+    private final ArrayList<User> users = new ArrayList<>();
     private User localUser;
 
     public void addChat(Chat chat) {
@@ -46,7 +46,7 @@ public class ChatManager {
     }
 
     public Chat[] getChats(User user) {
-        ArrayList<Chat> userChats = new ArrayList<Chat>();
+        ArrayList<Chat> userChats = new ArrayList<>();
 
         for (Chat chat : chats) {
             if (chat.hasUser(user.getName())) {
@@ -105,7 +105,7 @@ public class ChatManager {
     }
 
     public User[] getAllUsers() {
-        ArrayList<User> temp = new ArrayList<User>();
+        ArrayList<User> temp = new ArrayList<>();
         temp.addAll(users);
         temp.add(localUser);
         return temp.toArray(new User[temp.size()]);

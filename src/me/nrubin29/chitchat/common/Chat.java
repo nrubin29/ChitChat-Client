@@ -22,8 +22,8 @@ public class Chat {
 
     public Chat(String name, String... users) {
         this.name = name;
-        this.users = new ArrayList<String>();
-        this.messages = new ArrayList<Message>();
+        this.users = new ArrayList<>();
+        this.messages = new ArrayList<>();
 
         this.chatPanel = new ChatPanel(this);
 

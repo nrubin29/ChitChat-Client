@@ -14,7 +14,7 @@ public class Settings {
     }
 
     private File file;
-    private final HashMap<String, String> contents = new HashMap<String, String>();
+    private final HashMap<String, String> contents = new HashMap<>();
 
     private Settings() {
         try {

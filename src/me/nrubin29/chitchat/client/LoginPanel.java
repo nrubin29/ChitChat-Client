@@ -1,61 +1,48 @@
 package me.nrubin29.chitchat.client;
 
-import me.nrubin29.chitchat.common.packet.packet.PacketLoginRequest;
-import me.nrubin29.chitchat.common.packet.packet.PacketRegisterRequest;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import me.nrubin29.chitchat.common.packet.PacketLoginRequest;
+import me.nrubin29.chitchat.common.packet.PacketRegisterRequest;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import static me.nrubin29.chitchat.client.JFXUtils.region;
+import static me.nrubin29.chitchat.client.JFXUtils.spacer;
 
-public class LoginPanel extends Box {
+public class LoginPanel extends HBox {
 
     LoginPanel() {
-        super(BoxLayout.Y_AXIS);
+        javafx.scene.image.ImageView logo = new ImageView(ProgramImage.LOGO.getURL().toString());
+        final TextField username = new TextField();
+        final PasswordField password = new PasswordField();
+        final TextField ip = new TextField();
 
-        JLabel logo = new JLabel(new ImageIcon(ProgramImage.LOGO.getImage()));
-        final JTextField username = new JTextField();
-        final JPasswordField password = new JPasswordField();
-        final JTextField ip = new JTextField();
+        HBox buttonPanel = new HBox();
+        buttonPanel.setAlignment(Pos.CENTER);
 
-        logo.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-
-        JButton login = new JButton("Login");
-        login.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ServerConnector.getInstance().setIP(ip.getText());
-                ServerConnector.getInstance().sendPacket(new PacketLoginRequest(username.getText(), new String(password.getPassword())));
-            }
+        Button login = new Button("Login");
+        login.setOnAction(e -> {
+            ServerConnector.getInstance().setIP(ip.getText());
+            ServerConnector.getInstance().sendPacket(new PacketLoginRequest(username.getText(), password.getText()));
         });
 
-        JButton register = new JButton("Register");
-        register.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ServerConnector.getInstance().setIP(ip.getText());
-                ServerConnector.getInstance().sendPacket(new PacketRegisterRequest(username.getText(), new String(password.getPassword())));
-            }
+        Button register = new Button("Register");
+        register.setOnAction(e -> {
+            ServerConnector.getInstance().setIP(ip.getText());
+            ServerConnector.getInstance().sendPacket(new PacketRegisterRequest(username.getText(), password.getText()));
         });
 
-        buttonPanel.add(login);
-        buttonPanel.add(register);
+        buttonPanel.getChildren().addAll(login, region(5, 0), register);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setMaximumSize(new Dimension(300, 300));
-        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(logo);
-        panel.add(username);
-        panel.add(password);
-        panel.add(ip);
-        panel.add(buttonPanel);
+        VBox panel = new VBox();
+        panel.setMaxSize(400, 400);
+        panel.setAlignment(Pos.CENTER);
+        panel.getChildren().addAll(region(0, 50), logo, region(0, 5), username, region(0, 5), password, region(0, 5), ip, region(0, 5), buttonPanel);
 
-        add(Box.createVerticalGlue());
-        add(panel);
-        add(Box.createVerticalGlue());
+        getChildren().addAll(spacer(true), panel, spacer(true));
     }
 }

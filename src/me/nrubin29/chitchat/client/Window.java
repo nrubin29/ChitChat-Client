@@ -1,26 +1,30 @@
 package me.nrubin29.chitchat.client;
 
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import me.nrubin29.chitchat.common.AbstractUser;
 import me.nrubin29.chitchat.common.ChatManager;
-import me.nrubin29.chitchat.common.packet.packet.PacketUserStatusChange;
+import me.nrubin29.chitchat.common.packet.PacketUserStatusChange;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
 
-public class Window extends JFrame {
+import static me.nrubin29.chitchat.client.JFXUtils.runAndWait;
 
-    private Window() {
-    }
+public class Window extends Application {
 
-    private static final Window instance = new Window();
+    private static Window instance;
 
     public static Window getInstance() {
         return instance;
     }
+
+    private Stage stage;
+    private Scene scene;
 
     private LoginPanel loginPanel;
     private MainPanel mainPanel;
@@ -28,29 +32,30 @@ public class Window extends JFrame {
 
     private TrayIcon trayIcon;
 
-    private void setup() {
-        setTitle("ChitChat - Login");
+    public void start(final Stage stage) {
+        instance = this;
+
+        this.stage = stage;
+
+        stage.setTitle("ChitChat - Login");
 
         showLoginPanel();
 
-        setBackground(Color.WHITE);
-        setSize(640, 480);
-        setLocationRelativeTo(null);
-        setVisible(true);
+        stage.setWidth(640);
+        stage.setMinWidth(640);
+        stage.setHeight(480);
+        stage.setMinHeight(480);
+        stage.show();
 
-        addWindowFocusListener(new WindowFocusListener() {
-            @Override
-            public void windowLostFocus(WindowEvent e) {
-                if (!login) {
-                    ServerConnector.getInstance().sendPacket(new PacketUserStatusChange(ChatManager.getInstance().getLocalUser(), AbstractUser.UserStatus.AWAY));
-                }
+        stage.setOnHiding(windowEvent -> {
+            if (!login) {
+                ServerConnector.getInstance().sendPacket(new PacketUserStatusChange(ChatManager.getInstance().getLocalUser(), AbstractUser.UserStatus.AWAY));
             }
+        });
 
-            @Override
-            public void windowGainedFocus(WindowEvent e) {
-                if (!login) {
-                    ServerConnector.getInstance().sendPacket(new PacketUserStatusChange(ChatManager.getInstance().getLocalUser(), AbstractUser.UserStatus.ONLINE));
-                }
+        stage.setOnShowing(windowEvent -> {
+            if (!login) {
+                ServerConnector.getInstance().sendPacket(new PacketUserStatusChange(ChatManager.getInstance().getLocalUser(), AbstractUser.UserStatus.ONLINE));
             }
         });
 
@@ -58,45 +63,62 @@ public class Window extends JFrame {
         trayIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (!login && !isVisible()) {
-                    setVisible(true);
+                if (!login && !stage.isShowing()) {
+                    stage.show();
                 }
             }
         });
     }
 
     public void showLoginPanel() {
-        if (mainPanel != null) {
-            remove(mainPanel);
-        }
+        Platform.runLater(() -> {
+            if (loginPanel == null) {
+                loginPanel = new LoginPanel();
+            }
 
-        add(loginPanel != null ? loginPanel : (loginPanel = new LoginPanel()));
+            replaceSceneContent(loginPanel);
 
-        login = true;
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        SystemTray.getSystemTray().remove(trayIcon);
+            login = true;
+            stage.setResizable(false);
+            stage.setOnCloseRequest(e -> System.exit(0));
+            SystemTray.getSystemTray().remove(trayIcon);
 
-        validate();
-        repaint();
+            stage.show();
+        });
     }
 
     public void showMainPanel() {
-        if (loginPanel != null) {
-            remove(loginPanel);
-        }
+        runAndWait(() -> {
+            if (mainPanel == null) {
+                mainPanel = new MainPanel();
+            }
 
-        add(mainPanel != null ? mainPanel : (mainPanel = new MainPanel()));
-        setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        login = false;
+            replaceSceneContent(mainPanel);
 
-        try {
-            SystemTray.getSystemTray().add(trayIcon);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            login = false;
+            stage.setResizable(true);
+            stage.setOnCloseRequest(e -> stage.hide());
 
-        validate();
-        repaint();
+            try {
+                SystemTray.getSystemTray().add(trayIcon);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            stage.show();
+        });
+    }
+
+    private void replaceSceneContent(Parent parent) {
+        runAndWait(() -> {
+            if (scene == null) {
+                scene = new Scene(parent);
+            } else {
+                scene.setRoot(parent);
+            }
+
+            stage.setScene(scene);
+        });
     }
 
     public LoginPanel getLoginPanel() {
@@ -107,7 +129,19 @@ public class Window extends JFrame {
         return mainPanel;
     }
 
+    public Stage getStage() {
+        return stage;
+    }
+
+    public boolean isVisible() {
+        return stage.isShowing();
+    }
+
+    public void setTitle(final String title) {
+        runAndWait(() -> stage.setTitle(title));
+    }
+
     public static void main(String[] args) {
-        Window.getInstance().setup();
+        launch(args);
     }
 }

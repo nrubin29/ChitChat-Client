@@ -1,44 +1,49 @@
 package me.nrubin29.chitchat.client;
 
+import javafx.scene.Scene;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.text.*;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
 import me.nrubin29.chitchat.common.Message;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class Notification extends JFrame {
+public class Notification extends FlowPane {
 
     public static void showNotification(Message message) {
         if (!Boolean.valueOf(Settings.getInstance().get("notifications"))) return;
 
         final Notification notification = new Notification(message);
 
+        Stage stage = new Stage();
+        Scene scene = new Scene(notification);
+        stage.setScene(scene);
+
+        stage.setX(Screen.getPrimary().getVisualBounds().getWidth());
+        stage.setY(Screen.getPrimary().getVisualBounds().getHeight());
+
         if (Boolean.valueOf(Settings.getInstance().get("sound"))) {
             Toolkit.getDefaultToolkit().beep();
         }
 
-        Timer timer = new Timer(5 * 1000, new ActionListener() {
+        new Timer().schedule(new TimerTask() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                notification.dispose();
+            public void run() {
+                stage.close();
             }
-        });
-        timer.start();
+        }, 0, 5000);
     }
 
     private Notification(Message message) {
-        JLabel label = new JLabel("(" + message.getChat().getName() + ") " + message.getSender().getName() + ": " + message.getMessage());
-        label.setForeground(Color.BLACK);
-        label.setHorizontalAlignment(JLabel.CENTER);
-        label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
-        add(label);
+        Text label = new Text("(" + message.getChat().getName() + ") " + message.getSender().getName() + ": " + message.getMessage());
+        label.setTextAlignment(TextAlignment.CENTER);
+        label.setFont(Font.font(Font.getDefault().getName(), FontWeight.NORMAL, FontPosture.REGULAR, 10));
+        getChildren().add(label);
 
-        JFrame.setDefaultLookAndFeelDecorated(true);
-        setUndecorated(true);
-        com.sun.awt.AWTUtilities.setWindowOpacity(this, 0.5f);
-        setSize(new Dimension(label.getFontMetrics(label.getFont()).stringWidth(label.getText()) + 50, 100));
-        setLocation(GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().getLocation());
-        setVisible(true);
+        setOpacity(.5);
+        setPrefSize(label.getWrappingWidth() + 50, 100);
     }
 }

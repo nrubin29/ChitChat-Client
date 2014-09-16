@@ -1,22 +1,28 @@
 package me.nrubin29.chitchat.client;
 
+import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import me.nrubin29.chitchat.common.Chat;
 import me.nrubin29.chitchat.common.ChatManager;
-import me.nrubin29.chitchat.common.packet.packet.PacketChatCreate;
-import me.nrubin29.chitchat.common.packet.packet.PacketChatRemoveUser;
+import me.nrubin29.chitchat.common.packet.PacketChatCreate;
+import me.nrubin29.chitchat.common.packet.PacketChatRemoveUser;
+import org.controlsfx.dialog.Dialogs;
 
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.util.Optional;
 
-public class MainPanel extends JPanel {
+import static me.nrubin29.chitchat.client.JFXUtils.columnConstraints;
+import static me.nrubin29.chitchat.client.JFXUtils.region;
 
-    private final JList list;
-    private final DefaultListModel model;
+public class MainPanel extends GridPane {
 
+    private final ListView<String> list;
+
+    private Stage settingsStage;
     private final SettingsWindow settingsWindow;
 
     private Chat currentChat;
@@ -24,125 +30,81 @@ public class MainPanel extends JPanel {
     MainPanel() {
         Window.getInstance().setTitle("ChitChat");
 
-        final JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        leftPanel.setMaximumSize(new Dimension(150, 480));
+        final VBox leftPanel = new VBox();
+        leftPanel.setPrefSize(150, 480);
 
-        settingsWindow = new SettingsWindow();
+        settingsStage = new Stage();
+        settingsStage.setTitle("Settings");
+        settingsStage.setScene(new Scene(settingsWindow = new SettingsWindow()));
 
-        model = new DefaultListModel();
+        list = new ListView<>();
+        list.setPrefSize(150, 460);
 
-        list = new JList(model);
-        list.setMaximumSize(new Dimension(150, 460));
-        list.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                Object selected = list.getSelectedValue();
+        list.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (currentChat != null) {
+                getChildren().remove(currentChat.getChatPanel());
+            }
 
-                if (selected == null) return;
+            currentChat = ChatManager.getInstance().getChat(newValue);
+
+            add(currentChat.getChatPanel(), 2, 0);
+
+            Window.getInstance().setTitle("ChitChat - " + currentChat.getName());
+        });
+        leftPanel.getChildren().add(list);
+
+        HBox buttonPanel = new HBox();
+        buttonPanel.setAlignment(Pos.CENTER);
+        buttonPanel.setPrefSize(150, 20);
+
+        Button addChat = new Button("+");
+        addChat.setOnAction(e -> {
+            Optional<String> response = Dialogs.create()
+                    .owner(Window.getInstance().getStage())
+                    .title("Enter Name")
+                    .masthead("Enter Name")
+                    .message("Enter a new name for the chat.")
+                    .showTextInput();
+
+            if (response.isPresent()) {
+                Chat chat = new Chat(response.get(), ChatManager.getInstance().getLocalUser().getName());
+                ChatManager.getInstance().addChat(chat);
+                ServerConnector.getInstance().sendPacket(new PacketChatCreate(chat));
+            }
+        });
+
+        Button removeChat = new Button("-");
+        removeChat.setOnAction(e -> {
+            if (list.getSelectionModel().getSelectedItem() != null) {
+                String chatName = list.getSelectionModel().getSelectedItem();
 
                 if (currentChat != null) {
-                    remove(currentChat.getChatPanel());
+                    getChildren().remove(currentChat.getChatPanel());
+                    Window.getInstance().setTitle("ChitChat");
                 }
 
-                currentChat = ChatManager.getInstance().getChat(selected.toString());
-
-                add(currentChat.getChatPanel());
-
-                validate();
-                repaint();
-
-                Window.getInstance().setTitle("ChitChat - " + currentChat.getName());
+                ChatManager.getInstance().removeChat(chatName);
+                ServerConnector.getInstance().sendPacket(new PacketChatRemoveUser(chatName, ChatManager.getInstance().getLocalUser().getName()));
             }
         });
-        leftPanel.add(list);
 
-        JSeparator leftSep = new JSeparator(SwingConstants.HORIZONTAL);
-        leftSep.setMaximumSize(new Dimension(150 - 5, 10));
-        leftPanel.add(leftSep);
+        Button settings = new Button("S");
+        settings.setOnAction(e -> settingsStage.show());
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.setMaximumSize(new Dimension(150, 33));
-
-        buttonPanel.add(Box.createHorizontalGlue());
-
-        JLabel addChat = new JLabel("+");
-        addChat.setMaximumSize(new Dimension(100, 20));
-        addChat.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                String chatName = JOptionPane.showInputDialog(MainPanel.this, "Enter a name for the chat.");
-
-                if (chatName != null) {
-                    Chat chat = new Chat(chatName, ChatManager.getInstance().getLocalUser().getName());
-                    ChatManager.getInstance().addChat(chat);
-                    ServerConnector.getInstance().sendPacket(new PacketChatCreate(chat));
-                }
-            }
+        Button logout = new Button("x");
+        logout.setOnAction(e -> {
+            Window.getInstance().showLoginPanel();
+            ChatManager.getInstance().clear();
         });
-        buttonPanel.add(addChat);
 
-        buttonPanel.add(Box.createHorizontalGlue());
+        buttonPanel.getChildren().addAll(addChat, region(5, 0), removeChat, region(5, 0), settings, region(5, 0), logout);
 
-        JLabel removeChat = new JLabel("-");
-        removeChat.setMaximumSize(new Dimension(100, 20));
-        removeChat.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (list.getSelectedValue() != null) {
-                    String chatName = list.getSelectedValue().toString();
+        leftPanel.getChildren().addAll(region(0, 5), buttonPanel);
 
-                    if (currentChat != null) {
-                        remove(currentChat.getChatPanel());
-                        Window.getInstance().setTitle("ChitChat");
-                        validate();
-                        repaint();
-                    }
+//        getChildren().addAll(leftPanel, region(5, 0));
 
-                    ChatManager.getInstance().removeChat(chatName);
-                    ServerConnector.getInstance().sendPacket(new PacketChatRemoveUser(chatName, ChatManager.getInstance().getLocalUser().getName()));
-                }
-            }
-        });
-        buttonPanel.add(removeChat);
-
-        buttonPanel.add(Box.createHorizontalGlue());
-
-        JLabel settings = new JLabel("S");
-        settings.setMaximumSize(new Dimension(100, 20));
-        settings.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                settingsWindow.setVisible(true);
-            }
-        });
-        buttonPanel.add(settings);
-
-        buttonPanel.add(Box.createHorizontalGlue());
-
-        JLabel logout = new JLabel("x");
-        logout.setMaximumSize(new Dimension(100, 20));
-        logout.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                Window.getInstance().showLoginPanel();
-                ChatManager.getInstance().clear();
-            }
-        });
-        buttonPanel.add(logout);
-
-        buttonPanel.add(Box.createHorizontalGlue());
-
-        leftPanel.add(buttonPanel);
-
-        add(leftPanel);
-
-        JSeparator sep = new JSeparator(SwingConstants.VERTICAL);
-        sep.setMaximumSize(new Dimension(10, 480));
-        add(sep);
-
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        addRow(0, leftPanel, region(5, 0));
+        getColumnConstraints().addAll(columnConstraints(29), columnConstraints(2), columnConstraints(69));
     }
 
     public SettingsWindow getSettingsWindow() {
@@ -150,10 +112,10 @@ public class MainPanel extends JPanel {
     }
 
     public void chatAdded(Chat chat) {
-        model.addElement(chat.getName());
+        Platform.runLater(() -> list.getItems().add(chat.getName()));
     }
 
     public void chatRemoved(Chat chat) {
-        model.removeElement(chat.getName());
+        Platform.runLater(() -> list.getItems().remove(chat.getName()));
     }
 }

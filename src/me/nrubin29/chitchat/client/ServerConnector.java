@@ -1,8 +1,8 @@
 package me.nrubin29.chitchat.client;
 
+import me.nrubin29.chitchat.client.packethandler.PacketHandlerManager;
 import me.nrubin29.chitchat.common.ChatManager;
-import me.nrubin29.chitchat.common.packet.handler.PacketHandlerManager;
-import me.nrubin29.chitchat.common.packet.packet.Packet;
+import me.nrubin29.chitchat.common.packet.Packet;
 
 import javax.crypto.Cipher;
 import javax.crypto.SealedObject;
@@ -42,36 +42,33 @@ public class ServerConnector {
 
             System.out.println("Got key: " + key);
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (true) {
+            new Thread(() -> {
+                while (true) {
+                    try {
+                        Packet packet = (Packet) inputStream.readObject();
+                        System.out.println("Received packet: " + packet);
+                        handlePacket(packet);
+                    } catch (EOFException e) {
+                        System.out.println("Lost connection to server.");
+
                         try {
-                            Packet packet = (Packet) inputStream.readObject();
-                            System.out.println("Received packet: " + packet);
-                            handlePacket(packet);
-                        } catch (EOFException e) {
-                            System.out.println("Lost connection to server.");
-
-                            try {
-                                socket.close();
-                            } catch (IOException e1) {
-                                e1.printStackTrace();
-                            }
-
-                            socket = null;
-
-                            Window.getInstance().showLoginPanel();
-                            ChatManager.getInstance().clear();
-
-                            break;
-                        } catch (SocketException e) {
-                            System.out.println("Socket closed.");
-                            socket = null;
-                            break;
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            socket.close();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
                         }
+
+                        socket = null;
+
+                        Window.getInstance().showLoginPanel();
+                        ChatManager.getInstance().clear();
+
+                        break;
+                    } catch (SocketException e) {
+                        System.out.println("Socket closed.");
+                        socket = null;
+                        break;
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }).start();

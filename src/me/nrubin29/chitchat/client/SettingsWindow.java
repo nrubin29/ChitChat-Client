@@ -1,63 +1,40 @@
 package me.nrubin29.chitchat.client;
 
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.*;
+import javafx.collections.FXCollections;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+
+import java.util.Collections;
 import java.util.HashMap;
 
-public class SettingsWindow extends JFrame {
+public class SettingsWindow extends HBox {
 
-    private final JList list;
-
-    private final HashMap<String, JPanel> settingsPanels;
-    private JPanel currentPanel;
+    private final HashMap<String, Pane> settingsPanels;
+    private Pane currentPanel;
 
     SettingsWindow() {
-        super("Settings");
-
-        settingsPanels = new HashMap<String, JPanel>();
+        settingsPanels = new HashMap<>();
         settingsPanels.put("General", new GeneralSettingsPanel());
-        settingsPanels.put("Account", new AccountSettingsPanel());
+        settingsPanels.put("Account", new AccountSettingsPanel(this));
 
-        DefaultListModel model = new DefaultListModel();
-
-        for (String setting : settingsPanels.keySet()) {
-            model.addElement(setting);
-        }
-
-        list = new JList(model);
-        list.setMaximumSize(new Dimension(150, 480));
-        list.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                Object selected = list.getSelectedValue();
-
-                if (selected == null) return;
-
-                if (currentPanel != null) {
-                    remove(currentPanel);
-                }
-
-                add(currentPanel = settingsPanels.get(selected.toString()));
-                validate();
-                repaint();
+        ListView<String> list = new ListView<>(FXCollections.observableArrayList(settingsPanels.keySet()));
+        list.getItems().sort(Collections.reverseOrder());
+        list.setPrefSize(150, 480);
+        list.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (currentPanel != null) {
+                getChildren().remove(currentPanel);
             }
+
+            getChildren().add(currentPanel = settingsPanels.get(newValue));
         });
 
-        add(list);
+        getChildren().addAll(list, JFXUtils.region(5, 0));
 
-        JSeparator sep = new JSeparator(SwingConstants.VERTICAL);
-        sep.setMaximumSize(new Dimension(10, 480));
-        add(sep);
-
-        setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
-        setBackground(Color.WHITE);
-        setSize(480, 480);
-        setLocationRelativeTo(null);
+        setPrefSize(480, 480);
     }
 
-    public <E extends JPanel> E getPanel(String name) {
+    public <E extends Pane> E getPanel(String name) {
         return (E) settingsPanels.get(name);
     }
 }
